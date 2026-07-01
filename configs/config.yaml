@@ -1,5 +1,5 @@
 defaults:
-  - model: moderncamembert_base
+  - models: moderncamembert_base
   - _self_
 
 paths:
