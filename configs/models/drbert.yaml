@@ -1,0 +1,4 @@
+name: drbert
+pretrained_model_name: Dr-BERT/DrBERT-7GB
+gradient_accumulation_steps: 2
+output_dir: models/drbert

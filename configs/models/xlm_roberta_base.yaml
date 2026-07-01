@@ -1,0 +1,4 @@
+name: xlm_roberta_base
+pretrained_model_name: xlm-roberta-base
+gradient_accumulation_steps: 2
+output_dir: models/xlm_roberta_base

@@ -1,0 +1,7 @@
+# config/model/camembert_base.yaml
+name: moderncamembert_base
+pretrained_model_name: almanach/moderncamembert-base
+gradient_accumulation_steps: 2
+
+# Utilise l'interpolation Hydra pour pointer dynamiquement vers ton sous-dossier
+output_dir: models/moderncamembert_base
