@@ -224,11 +224,11 @@ def train(cfg: DictConfig) -> None:
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         data_collator=DataCollatorForTokenClassification(tokenizer),
         compute_metrics=lambda p: compute_metrics(p, metric),
     )
-
+	
     # Entraînement
     logger.info(f"Début entraînement : {cfg.models.name}")
     trainer.train()
