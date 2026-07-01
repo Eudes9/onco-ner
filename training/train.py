@@ -162,7 +162,7 @@ def train(cfg: DictConfig) -> None:
     # Chemins
     splits_dir = Path(cfg.paths.splits_dir)
     txt_dir = Path(cfg.paths.data_dir) / "ann_txt_files"
-    output_dir = Path(cfg.model.output_dir)
+    output_dir = Path(cfg.models.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Chargement des splits
@@ -170,8 +170,8 @@ def train(cfg: DictConfig) -> None:
     train_df, val_df, test_df = load_splits(splits_dir)
 
     # Tokenizer
-    logger.info(f"Chargement du tokenizer : {cfg.model.pretrained_model_name}")
-    tokenizer = AutoTokenizer.from_pretrained(cfg.model.pretrained_model_name)
+    logger.info(f"Chargement du tokenizer : {cfg.models.pretrained_model_name}")
+    tokenizer = AutoTokenizer.from_pretrained(cfg.models.pretrained_model_name)
 
     # Datasets HuggingFace
     logger.info("Construction des datasets token classification...")
@@ -183,9 +183,9 @@ def train(cfg: DictConfig) -> None:
     )
 
     # Modèle
-    logger.info(f"Chargement du modèle : {cfg.model.pretrained_model_name}")
+    logger.info(f"Chargement du modèle : {cfg.models.pretrained_model_name}")
     model = AutoModelForTokenClassification.from_pretrained(
-        cfg.model.pretrained_model_name,
+        cfg.models.pretrained_model_name,
         num_labels=len(LABELS),
         id2label=ID2LABEL,
         label2id=LABEL2ID,
@@ -194,7 +194,7 @@ def train(cfg: DictConfig) -> None:
     # W&B via variables d'environnement
     # Le Trainer gère l'init et le finish en interne
     os.environ["WANDB_PROJECT"] = cfg.wandb.project
-    os.environ["WANDB_RUN_NAME"] = cfg.model.name
+    os.environ["WANDB_RUN_NAME"] = cfg.models.name
 
     # Métrique
     metric = evaluate.load("seqeval")
@@ -205,7 +205,7 @@ def train(cfg: DictConfig) -> None:
         num_train_epochs=cfg.training.num_epochs,
         per_device_train_batch_size=cfg.training.batch_size,
         per_device_eval_batch_size=cfg.training.batch_size,
-        gradient_accumulation_steps=cfg.model.gradient_accumulation_steps,
+        gradient_accumulation_steps=cfg.models.gradient_accumulation_steps,
         learning_rate=cfg.training.learning_rate,
         weight_decay=cfg.training.weight_decay,
         warmup_ratio=cfg.training.warmup_ratio,
@@ -230,7 +230,7 @@ def train(cfg: DictConfig) -> None:
     )
 
     # Entraînement
-    logger.info(f"Début entraînement : {cfg.model.name}")
+    logger.info(f"Début entraînement : {cfg.models.name}")
     trainer.train()
 
     # Sauvegarde
