@@ -1,0 +1,30 @@
+defaults:
+  - model: camembert_base
+  - _self_
+
+# Chemins — ${hydra:runtime.cwd} pointe toujours vers la racine du projet
+# peu importe où Hydra écrit ses logs horodatés
+paths:
+  data_dir: ${hydra:runtime.cwd}/data
+  splits_dir: ${hydra:runtime.cwd}/data/splits
+  models_dir: ${hydra:runtime.cwd}/models
+  results_dir: ${hydra:runtime.cwd}/benchmark/results
+
+# Entraînement
+training:
+  num_epochs: 5
+  learning_rate: 2e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  seed: 42
+  batch_size: 16   # override depuis CLI : training.batch_size=8 pour T4 Colab
+
+# Evaluation
+evaluation:
+  metric: seqeval
+  average: weighted
+
+# Logging
+wandb:
+  project: onco-ner
+  entity: "jeaneudes-gbada"  # remplace par ton username W&B

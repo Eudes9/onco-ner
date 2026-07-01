@@ -1,0 +1,43 @@
+# Environnement virtuel
+.venv-onco/
+venv/
+
+# Données FRACCO (ne jamais commiter)
+data/
+
+# Modèles entraînés (trop lourds pour GitHub)
+models/
+*.pt
+*.bin
+*.safetensors
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Hydra outputs
+outputs/
+.hydra/
+
+# MLflow / W&B
+mlruns/
+wandb/
+
+# Parquet splits (reproductibles, pas besoin de les versionner)
+data/splits/
+
+# VS Code
+.vscode/
+
+# Pytest
+.pytest_cache/
+htmlcov/
+.coverage
