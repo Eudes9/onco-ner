@@ -171,7 +171,7 @@ def train(cfg: DictConfig) -> None:
 
     # Tokenizer
     logger.info(f"Chargement du tokenizer : {cfg.models.pretrained_model_name}")
-    tokenizer = AutoTokenizer.from_pretrained(cfg.models.pretrained_model_name)
+    tokenizer = AutoTokenizer.from_pretrained(cfg.models.pretrained_model_name, use_fast=True)
 
     # Datasets HuggingFace
     logger.info("Construction des datasets token classification...")
