@@ -6,7 +6,7 @@ venv/
 data/
 
 # Modèles entraînés (trop lourds pour GitHub)
-models/
+/models/
 *.pt
 *.bin
 *.safetensors
