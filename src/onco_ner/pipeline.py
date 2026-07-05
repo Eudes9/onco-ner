@@ -194,3 +194,26 @@ class Pipeline:
     ) -> dict:
         """
         Prédit sur un fichier texte (.txt).
+
+        Args:
+            txt_path        : chemin vers le fichier texte
+            fuzzy           : activer le matching approximatif
+            fuzzy_threshold : seuil de similarité
+
+        Returns:
+            Résultat au même format que predict() avec champ 'source_file'
+        """
+        txt_path = Path(txt_path)
+        if not txt_path.exists():
+            raise FileNotFoundError(f"Fichier introuvable : {txt_path}")
+
+        text = txt_path.read_text(encoding="utf-8")
+        logger.info(f"Fichier chargé : {txt_path.name} ({len(text)} caractères)")
+
+        result = self.predict(
+            text,
+            fuzzy=fuzzy,
+            fuzzy_threshold=fuzzy_threshold,
+        )
+        result["source_file"] = str(txt_path)
+        return result

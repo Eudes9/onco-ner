@@ -60,7 +60,7 @@ class NERModel:
         device: torch.device,
         max_length: int = 512,
         stride: int = 256,
-        normalizer=None,  # ICDONormalizer optionnel
+        normalizer=None,
     ) -> None:
         self.model = model
         self.tokenizer = tokenizer
@@ -113,7 +113,12 @@ class NERModel:
                 f"Impossible de charger le modèle depuis '{model_path}'"
             ) from e
 
-    def predict(self, text: str) -> list[dict]:
+    def predict(
+        self,
+        text: str,
+        fuzzy: bool = True,
+        fuzzy_threshold: float = 0.8,
+    ) -> list[dict]:
         """
         Prédit les entités oncologiques dans un texte clinique.
 
@@ -122,7 +127,9 @@ class NERModel:
         les codes ICD-O correspondants.
 
         Args:
-            text : texte clinique en français
+            text            : texte clinique en français
+            fuzzy           : activer le matching approximatif
+            fuzzy_threshold : seuil de similarité pour le fuzzy match
 
         Returns:
             Liste de dicts avec clés :
@@ -153,7 +160,14 @@ class NERModel:
         for chunk_idx in range(n_chunks):
             input_ids = encoding["input_ids"][chunk_idx].unsqueeze(0).to(self.device)
             attention_mask = encoding["attention_mask"][chunk_idx].unsqueeze(0).to(self.device)
-            offset_mapping = encoding["offset_mapping"][chunk_idx].tolist()
+
+            # Gestion des deux cas : tenseur PyTorch (production) ou liste (tests)
+            offset_mapping_raw = encoding["offset_mapping"][chunk_idx]
+            offset_mapping = (
+                offset_mapping_raw.tolist()
+                if hasattr(offset_mapping_raw, "tolist")
+                else offset_mapping_raw
+            )
 
             with torch.no_grad():
                 outputs = self.model(
@@ -182,14 +196,20 @@ class NERModel:
                 if chunk_idx > 0 and offset_start < overlap_end_char:
                     continue
                 if offset_start not in all_token_preds:
-                    all_token_preds[offset_start] = (offset_end, ID2LABEL[pred], score)
+                    all_token_preds[offset_start] = (
+                        offset_end, ID2LABEL[pred], score
+                    )
 
         sorted_tokens = sorted(all_token_preds.items())
         entities = self._extract_entities(text, sorted_tokens)
 
-        # Normalisation ICD-O optionnelle
+        # Normalisation ICD-O optionnelle avec transmission des paramètres fuzzy
         if self.normalizer is not None:
-            entities = self.normalizer.normalize_entities(entities)
+            entities = self.normalizer.normalize_entities(
+                entities,
+                fuzzy=fuzzy,
+                fuzzy_threshold=fuzzy_threshold,
+            )
 
         logger.info(f"Texte analysé : {len(entities)} entités détectées")
         return entities
