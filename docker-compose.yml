@@ -1,0 +1,30 @@
+# docker-compose.yml
+services:
+  onco-ner-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=Eudes9/onco-ner-xlm-roberta-optimized
+      # CSV_PATH : décommenter et ajuster si normalisation ICD-O souhaitée
+      # - CSV_PATH=/app/data/DetectOnco_Final.csv
+      - MAX_LENGTH=512
+      - STRIDE=256
+      - DEVICE=cpu
+      - OMP_NUM_THREADS=1
+      - MKL_NUM_THREADS=1
+    volumes:
+      # Monte le dossier data/ local dans le conteneur (read-only)
+      # Nécessaire uniquement si CSV_PATH est défini
+      - ./data:/app/data:ro
+    healthcheck:
+      # Utilise Python natif — curl absent de python:3.12-slim
+      test: [
+        "CMD", "python", "-c",
+        "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"
+      ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      # Laisse le temps au modèle de se charger depuis HuggingFace au premier démarrage
+      start_period: 120s
