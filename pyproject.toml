@@ -16,6 +16,7 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["onco_ner*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
