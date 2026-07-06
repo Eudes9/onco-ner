@@ -3,7 +3,7 @@
 """
 Wrapper NER autour de XLM-RoBERTa optimisé.
 
-Gère :
+Gères :
 - Chargement du modèle depuis HuggingFace Hub ou chemin local
 - Inférence avec sliding window (documents > 512 tokens)
 - Extraction des entités depuis les prédictions BIO
@@ -12,7 +12,6 @@ Gère :
 """
 
 from pathlib import Path
-from typing import Optional
 
 import torch
 import torch.nn.functional as F
@@ -30,8 +29,8 @@ LABELS = [
     "B-differenciation", "I-differenciation",
     "B-expression_CIM", "I-expression_CIM",
 ]
-ID2LABEL = {i: l for i, l in enumerate(LABELS)}
-LABEL2ID = {l: i for i, l in enumerate(LABELS)}
+ID2LABEL = {i: lbl for i, lbl in enumerate(LABELS)}
+LABEL2ID = {lbl: i for i, lbl in enumerate(LABELS)}
 
 
 class NERModel:
@@ -158,8 +157,12 @@ class NERModel:
 
         n_chunks = len(encoding["input_ids"])
         for chunk_idx in range(n_chunks):
-            input_ids = encoding["input_ids"][chunk_idx].unsqueeze(0).to(self.device)
-            attention_mask = encoding["attention_mask"][chunk_idx].unsqueeze(0).to(self.device)
+            input_ids = (
+                encoding["input_ids"][chunk_idx].unsqueeze(0).to(self.device)
+            )
+            attention_mask = (
+                encoding["attention_mask"][chunk_idx].unsqueeze(0).to(self.device)
+            )
 
             # Gestion des deux cas : tenseur PyTorch (production) ou liste (tests)
             offset_mapping_raw = encoding["offset_mapping"][chunk_idx]
@@ -181,8 +184,10 @@ class NERModel:
 
             if chunk_idx > 0:
                 overlap_end_char = next(
-                    (off[0] for off in offset_mapping
-                     if not (off[0] == 0 and off[1] == 0)),
+                    (
+                        off[0] for off in offset_mapping
+                        if not (off[0] == 0 and off[1] == 0)
+                    ),
                     0,
                 )
             else:
@@ -248,8 +253,10 @@ class NERModel:
 
             elif label.startswith("I-"):
                 entity_type = label[2:]
-                if (current_entity is not None and
-                        current_entity["label"] == entity_type):
+                if (
+                    current_entity is not None
+                    and current_entity["label"] == entity_type
+                ):
                     current_entity["end"] = offset_end
                     current_entity["text"] = text[
                         current_entity["start"]:offset_end
