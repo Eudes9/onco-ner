@@ -18,7 +18,7 @@ def get_logger(name: str) -> logging.Logger:
         logger.addHandler(handler)
         logger.setLevel(logging.INFO)
         
-        # 💡 SÉCURITÉ : Empêche la duplication des logs dans les frameworks (Hydra, FastAPI)
+        # Empêche la duplication des logs (Hydra, FastAPI)
         logger.propagate = False
         
     return logger

@@ -1,8 +1,10 @@
 # src/onco_ner/utils/seed.py
 
 import random
+
 import numpy as np
 import torch
+
 from onco_ner.utils.logging import get_logger
 
 logger = get_logger(__name__)

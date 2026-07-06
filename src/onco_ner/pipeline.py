@@ -10,7 +10,9 @@ Usage minimal :
         model_path="Eudes9/onco-ner-xlm-roberta-optimized",
         csv_path="data/DetectOnco_Final.csv",
     )
-    result = pipeline.predict("Patient avec carcinome canalaire infiltrant du sein gauche")
+    result = pipeline.predict(
+		"Patient avec carcinome canalaire infiltrant du sein gauche"
+    )
 
 Output :
     {
@@ -42,7 +44,6 @@ from typing import Optional
 
 from onco_ner.models.ner_model import NERModel
 from onco_ner.models.normalizer import ICDONormalizer
-from onco_ner.exceptions import ModelNotLoadedError
 from onco_ner.utils.logging import get_logger
 
 logger = get_logger(__name__)

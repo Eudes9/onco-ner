@@ -21,7 +21,6 @@ from pathlib import Path
 import polars as pl
 from rapidfuzz.distance import Levenshtein
 
-from onco_ner.exceptions import UnknownICDOCodeError
 from onco_ner.utils.logging import get_logger
 
 logger = get_logger(__name__)
