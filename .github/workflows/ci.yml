@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"  # Cache pip : divise le temps de CI par 2-3
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -29,6 +29,12 @@ jobs:
           pip install transformers==4.49.0
           pip install torch --index-url https://download.pytorch.org/whl/cpu
           pip install rapidfuzz polars==1.9.0 pydantic fastapi httpx
+
+      - name: Debug package structure
+        run: |
+          python -c "import onco_ner; print('onco_ner OK:', onco_ner.__file__)"
+          python -c "from onco_ner.data import brat_parser; print('onco_ner.data OK')"
+          pip show onco-ner
 
       - name: Lint with Ruff
         run: |
@@ -41,10 +47,12 @@ jobs:
             --cov-report=term-missing \
             --cov-report=xml \
             -m "not spark"
+        env:
+          PYTHONPATH: src
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
-          token: ${{ secrets.CODECOV_TOKEN }}  # Obligatoire depuis v4
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
