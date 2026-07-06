@@ -10,7 +10,16 @@
 Basé sur un modèle **XLM-RoBERTa** finement entraîné sur le corpus médical français **FRACCO**, le projet intègre une gestion par fenêtre glissante (*Sliding Window*) pour traiter les rapports médicaux longs et un algorithme de *Fuzzy Matching* ultra-rapide pour la codification automatique.
 
 ---
+## 📖 Documentation
 
+Le rapport technique complet et détaillé de ce projet est disponible ici : 
+👉 **[Consulter le Rapport Technique (RAPPORT.md)](./docs/rapport_scientifique.md)**
+
+Il contient :
+* L'état de l'art détaillé (modèles BERT, outils NLP médicaux en français)
+* La méthodologie complète (*Sliding Window*, *Class Weights*)
+* L'analyse approfondie des résultats et des erreurs par label
+* Les limitations et perspectives du projet
 ## 🚀 Fonctionnalités Clés
 
 * **NER Spécialisé (Token Classification) :** Extraction des classes `Morphologie` (types de tumeurs), `Topographie` (organes/localisations) et `Différenciation` (grade histologique).
